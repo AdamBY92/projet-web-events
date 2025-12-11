@@ -13,6 +13,9 @@ export default function Events() {
     fetchEvents();
   }, []);
 
+  const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
+  const token = localStorage.getItem('token');
+
   async function fetchEvents() {
     setLoading(true);
     try {
@@ -49,7 +52,23 @@ export default function Events() {
             <li key={ev._id} style={{ marginBottom: 10 }}>
               <strong>{ev.title}</strong> — {new Date(ev.date).toLocaleString()}
               <div>
-                <button onClick={() => openEdit(ev)}>Éditer</button>
+                {/* Show Edit/Delete only if current user is owner or admin */}
+                {(currentUser && (currentUser.role === 'admin' || String(currentUser._id || currentUser.id) === String(ev.createdBy?._id || ev.createdBy))) && (
+                  <>
+                    <button onClick={() => openEdit(ev)}>Éditer</button>
+                    <button onClick={async () => {
+                      if (!token) return alert('Vous devez être connecté');
+                      if (!confirm('Supprimer cet événement ?')) return;
+                      try {
+                        await axios.delete(`/api/events/${ev._id}`, { headers: { Authorization: `Bearer ${token}` } });
+                        fetchEvents();
+                      } catch (err) {
+                        console.error(err);
+                        alert('Erreur lors de la suppression');
+                      }
+                    }}>Supprimer</button>
+                  </>
+                )}
               </div>
             </li>
           ))}
