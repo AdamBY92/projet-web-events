@@ -21,9 +21,9 @@ const registrationRoutes = require('./routes/registration');
 const adminRoutes = require('./routes/adminRoutes');
 
 // Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/registrations', registrationRoutes);
-app.use('/api/admin', adminRoutes);
+app.use('/api', authRoutes);
+app.use('/api', registrationRoutes);
+app.use('/api', adminRoutes);
 
 // Route test
 app.get('/', (req, res) => {

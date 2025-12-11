@@ -12,21 +12,30 @@ const Home = () => {
   };
 
   return (
-    <div>
-      <h1>Gestion d'Événements</h1>
-      {token ? (
-        <div>
-          <p>Bonjour, {user.name}!</p>
-          <Link to="/my-registrations">Mes Inscriptions</Link>
-          {user.role === 'admin' && <Link to="/admin">Panel Admin</Link>}
-          <button onClick={logout}>Déconnexion</button>
-        </div>
-      ) : (
-        <div>
-          <Link to="/login">Connexion</Link>
-          <Link to="/register">Inscription</Link>
-        </div>
-      )}
+    <div className="home-container">
+      <div className="hero-section">
+        <h1 className="hero-title">Gestion d'Événements</h1>
+        <p className="hero-subtitle">Découvrez et inscrivez-vous aux événements les plus passionnants</p>
+        {token ? (
+          <div className="hero-actions">
+            <p className="welcome-message">Bonjour, {user.name}!</p>
+            <div className="action-buttons">
+              <Link to="/my-registrations" className="btn btn-primary">Mes Inscriptions</Link>
+              {user.role === 'admin' && (
+                <Link to="/admin" className="btn btn-secondary">Panel Admin</Link>
+              )}
+              <button onClick={logout} className="btn btn-outline">Déconnexion</button>
+            </div>
+          </div>
+        ) : (
+          <div className="hero-actions">
+            <div className="action-buttons">
+              <Link to="/login" className="btn btn-primary">Connexion</Link>
+              <Link to="/register" className="btn btn-secondary">Inscription</Link>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
