@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const Register = () => {
   const [form, setForm] = useState({ name: '', email: '', password: '' });
@@ -23,35 +23,52 @@ const Register = () => {
   };
 
   return (
-    <div>
-      <h1>Inscription</h1>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="name"
-          placeholder="Nom"
-          value={form.name}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={form.email}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Mot de passe"
-          value={form.password}
-          onChange={handleChange}
-          required
-        />
-        <button type="submit">S'inscrire</button>
-      </form>
+    <div className="auth-container">
+      <div className="auth-card">
+        <h1 className="auth-title">Inscription</h1>
+        <form onSubmit={handleSubmit} className="auth-form">
+          <div className="form-group">
+            <label className="form-label">Nom</label>
+            <input
+              type="text"
+              name="name"
+              className="form-input"
+              placeholder="Votre nom"
+              value={form.name}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label className="form-label">Email</label>
+            <input
+              type="email"
+              name="email"
+              className="form-input"
+              placeholder="Votre email"
+              value={form.email}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label className="form-label">Mot de passe</label>
+            <input
+              type="password"
+              name="password"
+              className="form-input"
+              placeholder="Votre mot de passe"
+              value={form.password}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <button type="submit" className="btn btn-primary btn-full">S'inscrire</button>
+        </form>
+        <p className="auth-link">
+          Déjà un compte ? <Link to="/login">Se connecter</Link>
+        </p>
+      </div>
     </div>
   );
 };

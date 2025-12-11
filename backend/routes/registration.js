@@ -1,15 +1,17 @@
-const express = require('express');
-const router = express.Router();
-const { getUserRegistrations, registerForEvent, cancelRegistration } = require('../controllers/registrationController');
-const { auth } = require('../middleware/auth');
+const { Router } = require("express");
+const RegistrationController = require("../controllers/registrationController");
+const checkAuth = require("../middlwares/auth");
+const checkRole = require("../middlwares/check-role");
 
-// GET /api/registrations - Mes inscriptions
-router.get('/', auth, getUserRegistrations);
+const router = Router();
+
+// GET /api/registrations - Récupérer les inscriptions de l'utilisateur
+router.get("/registrations", checkAuth, checkRole(["user", "admin"]), RegistrationController.cget);
 
 // POST /api/registrations - S'inscrire à un événement
-router.post('/', auth, registerForEvent);
+router.post("/registrations", checkAuth, checkRole(["user", "admin"]), RegistrationController.create);
 
 // DELETE /api/registrations/:id - Annuler une inscription
-router.delete('/:id', auth, cancelRegistration);
+router.delete("/registrations/:id", checkAuth, checkRole(["user", "admin"]), RegistrationController.delete);
 
 module.exports = router;

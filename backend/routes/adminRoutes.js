@@ -1,34 +1,11 @@
-const express = require('express');
-const router = express.Router();
-const Event = require('../models/Event');
-const Registration = require('../models/Registration');
-const User = require('../models/User');
-const { auth, isAdmin } = require('../middleware/auth');
+const { Router } = require("express");
+const AdminController = require("../controllers/adminController");
+const checkAuth = require("../middlwares/auth");
+const checkRole = require("../middlwares/check-role");
+
+const router = Router();
 
 // GET /api/admin/stats - Statistiques admin
-router.get('/stats', auth, isAdmin, async (req, res) => {
-  try {
-    const totalEvents = await Event.countDocuments();
-    const totalRegistrations = await Registration.countDocuments();
-    const totalUsers = await User.countDocuments();
-    const adminUsers = await User.countDocuments({ role: 'admin' });
-
-    // Événements populaires (top 5 par inscriptions)
-    const popularEvents = await Event.find()
-      .sort({ currentParticipants: -1 })
-      .limit(5)
-      .select('title currentParticipants maxParticipants');
-
-    res.json({
-      totalEvents,
-      totalRegistrations,
-      totalUsers,
-      adminUsers,
-      popularEvents
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+router.get("/admin/stats", checkAuth, checkRole(["admin"]), AdminController.stats);
 
 module.exports = router;

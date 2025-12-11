@@ -35,24 +35,46 @@ const MyRegistrations = () => {
     }
   };
 
-  if (loading) return <div>Chargement...</div>;
+  if (loading) return (
+    <div className="loading-container">
+      <div className="loading-spinner"></div>
+      <p>Chargement de vos inscriptions...</p>
+    </div>
+  );
 
   return (
-    <div>
-      <h1>Mes Inscriptions</h1>
+    <div className="page-container">
+      <div className="page-header">
+        <h1 className="page-title">Mes Inscriptions</h1>
+      </div>
       {registrations.length === 0 ? (
-        <p>Vous n'êtes inscrit à aucun événement.</p>
+        <div className="empty-state">
+          <h2>Aucune inscription trouvée</h2>
+          <p>Vous n'êtes inscrit à aucun événement pour le moment.</p>
+        </div>
       ) : (
-        <ul>
+        <div className="registrations-grid">
           {registrations.map(reg => (
-            <li key={reg._id}>
-              <h3>{reg.event.title}</h3>
-              <p>Date: {new Date(reg.event.date).toLocaleDateString()}</p>
-              <p>Lieu: {reg.event.location}</p>
-              <button onClick={() => cancelRegistration(reg._id)}>Annuler</button>
-            </li>
+            <div key={reg._id} className="registration-card">
+              <div className="card-header">
+                <h3 className="card-title">{reg.event.title}</h3>
+              </div>
+              <div className="card-body">
+                <div className="event-info">
+                  <p><strong>Date:</strong> {new Date(reg.event.date).toLocaleDateString()}</p>
+                  <p><strong>Lieu:</strong> {reg.event.location}</p>
+                  <p><strong>Description:</strong> {reg.event.description}</p>
+                </div>
+                <button
+                  onClick={() => cancelRegistration(reg._id)}
+                  className="btn btn-danger"
+                >
+                  Annuler l'inscription
+                </button>
+              </div>
+            </div>
           ))}
-        </ul>
+        </div>
       )}
     </div>
   );

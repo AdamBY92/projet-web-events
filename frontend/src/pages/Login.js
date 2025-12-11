@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const Login = () => {
   const [form, setForm] = useState({ email: '', password: '' });
@@ -23,27 +23,40 @@ const Login = () => {
   };
 
   return (
-    <div>
-      <h1>Connexion</h1>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={form.email}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Mot de passe"
-          value={form.password}
-          onChange={handleChange}
-          required
-        />
-        <button type="submit">Se connecter</button>
-      </form>
+    <div className="auth-container">
+      <div className="auth-card">
+        <h1 className="auth-title">Connexion</h1>
+        <form onSubmit={handleSubmit} className="auth-form">
+          <div className="form-group">
+            <label className="form-label">Email</label>
+            <input
+              type="email"
+              name="email"
+              className="form-input"
+              placeholder="Votre email"
+              value={form.email}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label className="form-label">Mot de passe</label>
+            <input
+              type="password"
+              name="password"
+              className="form-input"
+              placeholder="Votre mot de passe"
+              value={form.password}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <button type="submit" className="btn btn-primary btn-full">Se connecter</button>
+        </form>
+        <p className="auth-link">
+          Pas encore de compte ? <Link to="/register">S'inscrire</Link>
+        </p>
+      </div>
     </div>
   );
 };
