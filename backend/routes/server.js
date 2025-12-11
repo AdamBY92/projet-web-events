@@ -1,4 +1,5 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
 
@@ -9,10 +10,8 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// Import des routes
+// Routes d'authentification
 const authRoutes = require('./routes/auth');
-
-// Routes
 app.use('/api/auth', authRoutes);
 
 // Route test
@@ -20,9 +19,15 @@ app.get('/', (req, res) => {
   res.json({ message: 'API de gestion d\'événements' });
 });
 
+// Connexion MongoDB
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/events', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => console.log('✅ MongoDB connecté'))
+.catch(err => console.error('❌ Erreur MongoDB:', err));
+
 // Démarrer le serveur
 app.listen(PORT, () => {
-  console.log(`Serveur backend sur http://localhost:${PORT}`);
-  console.log(`Testez: curl http://localhost:${PORT}/`);
-  console.log(`Inscription: curl -X POST http://localhost:${PORT}/api/auth/register -H "Content-Type: application/json" -d "{\\"name\\":\\"Test\\",\\"email\\":\\"test@test.com\\",\\"password\\":\\"test123\\"}"`);
+  console.log(`🚀 Serveur backend sur http://localhost:${PORT}`);
 });
