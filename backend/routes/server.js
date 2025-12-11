@@ -25,9 +25,9 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/events', 
   useUnifiedTopology: true,
 })
 .then(() => console.log('✅ MongoDB connecté'))
-.catch(err => console.error('❌ Erreur MongoDB:', err));
+.catch(err => console.error('Erreur MongoDB:', err));
 
 // Démarrer le serveur
 app.listen(PORT, () => {
-  console.log(`🚀 Serveur backend sur http://localhost:${PORT}`);
+  console.log(`Serveur backend sur http://localhost:${PORT}`);
 });
