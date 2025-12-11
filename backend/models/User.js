@@ -1,47 +1,69 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
+const { DataTypes } = require('sequelize');
+const bcrypt = require('bcrypt');
+const { sequelize } = require('../config/database');
 
-const userSchema = new mongoose.Schema({
-  name: { 
-    type: String, 
-    required: true 
+const User = sequelize.define('User', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
   },
-  email: { 
-    type: String, 
-    required: true, 
-    unique: true 
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: { msg: 'Le nom est requis' }
+    }
   },
-  password: { 
-    type: String, 
-    required: true 
+  email: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+    validate: {
+      isEmail: { msg: 'Email invalide' },
+      notEmpty: { msg: 'L\'email est requis' }
+    }
   },
-  role: { 
-    type: String, 
-    enum: ['user', 'admin'], 
-    default: 'user' 
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: { msg: 'Le mot de passe est requis' },
+      len: {
+        args: [6, 100],
+        msg: 'Le mot de passe doit contenir au moins 6 caractères'
+      }
+    }
   },
-  createdAt: { 
-    type: Date, 
-    default: Date.now 
+  role: {
+    type: DataTypes.ENUM('user', 'admin'),
+    defaultValue: 'user',
+    allowNull: false
+  }
+}, {
+  tableName: 'users',
+  timestamps: true, // createdAt et updatedAt automatiques
+  hooks: {
+    // Hash du mot de passe avant création
+    beforeCreate: async (user) => {
+      if (user.password) {
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(user.password, salt);
+      }
+    },
+    // Hash du mot de passe avant mise à jour
+    beforeUpdate: async (user) => {
+      if (user.changed('password')) {
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(user.password, salt);
+      }
+    }
   }
 });
 
-// Hash du mot de passe avant sauvegarde
-userSchema.pre('save', async function(next) {
-  if (!this.isModified('password')) return next();
-  
-  try {
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
-    next();
-  } catch (error) {
-    next(error);
-  }
-});
-
-// Méthode pour vérifier le mot de passe
-userSchema.methods.comparePassword = async function(candidatePassword) {
+// Méthode d'instance pour vérifier le mot de passe
+User.prototype.comparePassword = async function(candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = User;
